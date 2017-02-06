@@ -97,19 +97,21 @@ int main(int argc, WCHAR **argvv)
 						//wprintf(L"%ws\n\n", pstrProfileXml);
 
 						profileParser = new ProfileParser(pstrProfileXml);
-						char *key;
-						bool success = profileParser->Parse(&key);
+						
+						// parser will try to point pszKey to key chars
+						char *pszKey = NULL;
+						bool success = profileParser->Parse(&pszKey);
 
 						if (success)
 						{
-							wprintf(L"  Network Key:  %hs\n", key);
+							wprintf(L"  Network Key:  %hs\n", pszKey);
 						}
 						else
 						{
 							wprintf(L"  [network key not found]\n");
 						}
 
-						free(key);
+						delete pszKey; // finished with pszKey
 												
 						wprintf(L"  dwFlags:\t    0x%x", dwFlags);
 						if (dwFlags & WLAN_PROFILE_GET_PLAINTEXT_KEY)
