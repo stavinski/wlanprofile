@@ -41,7 +41,7 @@ int main(int argc, WCHAR **argvv)
 		WCHAR GuidString[40] = { 0 };
 
 		wprintf(L"Current Index: %lu\n", pIfList->dwIndex);
-		for (int i = 0; i < (int)pIfList->dwNumberOfItems; i++) {
+		for (DWORD i = 0; i < (int)pIfList->dwNumberOfItems; i++) {
 			pIfInfo = (WLAN_INTERFACE_INFO *)&pIfList->InterfaceInfo[i];
 			iRet = StringFromGUID2(pIfInfo->InterfaceGuid, (LPOLESTR)&GuidString, 39);
 			wprintf(L"Interface: %s\n", pIfInfo->strInterfaceDescription);
@@ -62,7 +62,7 @@ int main(int argc, WCHAR **argvv)
 
 				wprintf(L"  Num Entries: %lu\n\n", pProfileList->dwNumberOfItems);
 
-				for (int j = 0; j < pProfileList->dwNumberOfItems; j++) {
+				for (DWORD j = 0; j < pProfileList->dwNumberOfItems; j++) {
 					pProfile =
 						(WLAN_PROFILE_INFO *)& pProfileList->ProfileInfo[j];
 
@@ -92,7 +92,7 @@ int main(int argc, WCHAR **argvv)
 					{
 
 						wprintf(L"  Profile Name:  %ws\n", pProfile->strProfileName);
-
+						
 						//wprintf(L"  Profile XML string:\n");
 						//wprintf(L"%ws\n\n", pstrProfileXml);
 
@@ -109,6 +109,8 @@ int main(int argc, WCHAR **argvv)
 							wprintf(L"  [network key not found]\n");
 						}
 
+						free(key);
+												
 						wprintf(L"  dwFlags:\t    0x%x", dwFlags);
 						if (dwFlags & WLAN_PROFILE_GET_PLAINTEXT_KEY)
 						    wprintf(L"   Get Plain Text Key");
@@ -141,6 +143,12 @@ int main(int argc, WCHAR **argvv)
 
 	printf("Press any key to continue...");
 	getchar();
+
+	if (profileParser != NULL)
+	{
+		delete profileParser;
+		profileParser = NULL;
+	}
 
 	if (pIfList != NULL) {
 		WlanFreeMemory(pIfList);
